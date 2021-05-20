@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="https://unpkg.com/@trevoreyre/autocomplete-js/dist/style.css" />
+    <script async
+        src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBM7jXulzsC_PNth0UgPRUcOzpght3NwkI&libraries=places">
+    </script>
+
+<!-- <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBM7jXulzsC_PNth0UgPRUcOzpght3NwkI&libraries=places"></script> -->
+
+
+</head>
+
+<body>
+
+    <div id="autocomplete" class="autocomplete">
+        <input class="autocomplete-input" />
+        <ul class="autocomplete-result-list"></ul>
+    </div>
+
+
+
+    <script src="https://unpkg.com/@trevoreyre/autocomplete-js"></script>
+
+
+
+
+
+    <script>
+        const wikiUrl = 'https://en.wikipedia.org'
+        const params = 'action=query&list=search&format=json&origin=*'
+
+    
+        new Autocomplete('#autocomplete', {
+
+            search: input => {
+                console.log(input)
+                const url = `/check/?search=${(input)}`
+                return new Promise(resolve => {
+                    // if (input.length < 3) {
+                    //     return resolve([])
+                    // }
+
+                    fetch(url)
+                        .then(response => response.json())
+                        .then(data => {
+                            console.log(data)
+                            // const results = data((result, index) => {
+                            //     return {
+                            //         ...result,
+                            //         index
+                            //     }
+                            // })
+                            resolve(data)
+                        })
+                })
+            },
+
+
+            renderResult: (result, props) => {
+                console.log(result)
+                let group = ''
+                if (result.index % 3 === 0) {
+                    group = `<li class="group">Group</li>`
+                }
+                return `
+      ${group}
+      <li ${props}>
+        <div class="wiki-title">
+          ${result}
+        </div>
+        
+      </li>
+    `
+            },
+
+            getResultValue: result => result.title,
+            onSubmit: result => {
+                window.open(`${wikiUrl}/wiki/${
+      encodeURI(result.title)
+    }`)
+            }
+        })
+    </script>
+
+
+
+
+</body>
+
+</html>
